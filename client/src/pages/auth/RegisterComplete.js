@@ -36,7 +36,7 @@ const RegisterComplete = ({ history }) => {
                 await user.updatePassword(password)
                 const idTokenResult = await user.getIdTokenResult()
                 // redux store
-                console.log('user', user, 'idTokenResult', idTokenResult)
+                // console.log('user', user, 'idTokenResult', idTokenResult)
                 // redirect
                 // history.push('/')
 
@@ -76,7 +76,7 @@ const RegisterComplete = ({ history }) => {
         <div className="container p-5">
             <div className="row">
                 <div className="col-md-6 offset-md-3">
-                    <h4>Register</h4>
+                    <h4>Complete Registration</h4>
                     {completeRegistrationForm()}
                 </div>
             </div>
