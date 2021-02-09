@@ -20,14 +20,13 @@ const Register = () => {
             url: process.env.REACT_APP_REGISTER_REDIRECT_URL,
             handleCodeInApp: true
         }
-
         await auth.sendSignInLinkToEmail(email, conf)
         toast.success(`Email is sent to ${email}. Click the link to complete your registration`)
-
         window.localStorage.setItem('emailForRegistration', email)
         setEmail('')
     };
-
+ 
+    
 
 
     const registerForm = () => (
