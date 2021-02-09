@@ -39,7 +39,6 @@ const RegisterComplete = ({ history }) => {
                 // console.log('user', user, 'idTokenResult', idTokenResult)
                 // redirect
                 // history.push('/')
-
             }
         } catch (error){
             // console.log(error)
