@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { auth, googleAuthProvider } from "../../firebase";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button } from "antd";
 import { MailOutlined, GoogleOutlined } from "@ant-design/icons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Login = () => {
     const [email, setEmail] = useState("andrey.s.h.68@yandex.ru");
@@ -14,6 +15,12 @@ const Login = () => {
 
     const dispatch = useDispatch();
     const history = useHistory();
+
+    const {user} = useSelector(state =>({...state}))
+
+    useEffect(()=>{
+        if (user && user.token) history.push("/")
+    },[user])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -79,22 +86,24 @@ const Login = () => {
     );
 
     const googleLogin = async () => {
-        auth.signInWithPopup(googleAuthProvider).then(async (result) => {
-            const { user } = result;
-            const idTokenResult = await user.getIdTokenResult();
-            dispatch({
-                type: "LOGGED_IN_USER",
-                payload: {
-                    email: user.email,
-                    token: idTokenResult.token,
-                },
-            });
-            history.push('/')
-        })
-            .catch((err) => {
-                console.log(err)
-                toast.error(err.message)
+        auth
+            .signInWithPopup(googleAuthProvider)
+            .then(async (result) => {
+                const { user } = result;
+                const idTokenResult = await user.getIdTokenResult();
+                dispatch({
+                    type: "LOGGED_IN_USER",
+                    payload: {
+                        email: user.email,
+                        token: idTokenResult.token,
+                    },
+                });
+                history.push("/");
             })
+            .catch((err) => {
+                console.log(err);
+                toast.error(err.message);
+            });
     };
 
     return (
@@ -104,8 +113,8 @@ const Login = () => {
                     {loading ? (
                         <h4 className="text-danger">Loading ...</h4>
                     ) : (
-                            <h4>Login</h4>
-                        )}
+                        <h4>Login</h4>
+                    )}
                     {loginForm()}
                     <Button
                         onClick={googleLogin}
@@ -117,7 +126,8 @@ const Login = () => {
                         size="large"
                     >
                         Login with Google
-          </Button>
+                    </Button>
+                    <Link to='/forgot/password' className="float-right text-danger">Forgot Password</Link>
                 </div>
             </div>
         </div>

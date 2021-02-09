@@ -1,9 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { auth } from '../../firebase'
 import { toast } from 'react-toastify'
+import { useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
 const Register = () => {
     const [email, setEmail] = useState('');
+
+    const history = useHistory()
+    const { user } = useSelector(state => ({ ...state }))
+
+    useEffect(() => {
+        if (user && user.token) history.push("/")
+    }, [user])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -31,7 +40,7 @@ const Register = () => {
                 placeholder="Your email"
                 autoFocus
             />
-            <br/>
+            <br />
             <button type="submit" className="btn btn-raised">
                 Register
             </button>
