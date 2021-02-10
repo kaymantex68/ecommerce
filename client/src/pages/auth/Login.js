@@ -7,19 +7,8 @@ import { MailOutlined, GoogleOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import { createOrUpdateUser } from '../../functions/auth'
 
-const createOrUpdateUser = async (authtoken) => {
-    return await axios.post(
-        `${process.env.REACT_APP_API}/create-or-update-user`,
-        {},
-        {
-            headers: {
-                authtoken,
-            },
-        }
-    );
-};
 
 const Login = () => {
     const [email, setEmail] = useState("andrey.s.h.68@yandex.ru");
@@ -46,21 +35,24 @@ const Login = () => {
             const idTokenResult = await user.getIdTokenResult();
 
             createOrUpdateUser(idTokenResult.token)
-            .then(
-                response => console.log('Create or update respons', response)
-            )
-            .catch()
-
-            // send email and token to reducer
-            // dispatch({
-            //     type: "LOGGED_IN_USER",
-            //     payload: {
-            //         email: user.email,
-            //         token: idTokenResult.token,
-            //     },
-            // });
-
-            // history.push("/");
+                .then(
+                    response => {
+                        // send email and token to reducer
+                        dispatch({
+                            type: "LOGGED_IN_USER",
+                            payload: {
+                                name: response.data.name,
+                                email: response.data.email,
+                                token: idTokenResult.token,
+                                role: response.data.role,
+                                _id: response.data._id,
+                            },
+                        });
+                    }
+                )
+                .catch()
+            // redirect to main page
+            history.push("/");
         } catch (error) {
             console.log(error);
             toast.error(error.message);
@@ -112,13 +104,24 @@ const Login = () => {
             .then(async (result) => {
                 const { user } = result;
                 const idTokenResult = await user.getIdTokenResult();
-                dispatch({
-                    type: "LOGGED_IN_USER",
-                    payload: {
-                        email: user.email,
-                        token: idTokenResult.token,
-                    },
-                });
+                createOrUpdateUser(idTokenResult.token)
+                    .then(
+                        response => {
+                            // send email and token to reducer
+                            dispatch({
+                                type: "LOGGED_IN_USER",
+                                payload: {
+                                    name: response.data.name,
+                                    email: response.data.email,
+                                    token: idTokenResult.token,
+                                    role: response.data.role,
+                                    _id: response.data._id,
+                                },
+                            });
+                        }
+                    )
+                    .catch()
+                // redirect to main page
                 history.push("/");
             })
             .catch((err) => {
@@ -134,8 +137,8 @@ const Login = () => {
                     {loading ? (
                         <h4 className="text-danger">Loading ...</h4>
                     ) : (
-                            <h4>Login</h4>
-                        )}
+                        <h4>Login</h4>
+                    )}
                     {loginForm()}
                     <Button
                         onClick={googleLogin}
