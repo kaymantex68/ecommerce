@@ -7,6 +7,19 @@ import { MailOutlined, GoogleOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
+import axios from "axios";
+
+const createOrUpdateUser = async (authtoken) => {
+    return await axios.post(
+        `${process.env.REACT_APP_API}/create-or-update-user`,
+        {},
+        {
+            headers: {
+                authtoken,
+            },
+        }
+    );
+};
 
 const Login = () => {
     const [email, setEmail] = useState("andrey.s.h.68@yandex.ru");
@@ -16,30 +29,38 @@ const Login = () => {
     const dispatch = useDispatch();
     const history = useHistory();
 
-    const {user} = useSelector(state =>({...state}))
+    const { user } = useSelector((state) => ({ ...state }));
 
-    useEffect(()=>{
-        if (user && user.token) history.push("/")
-    },[user])
+    useEffect(() => {
+        if (user && user.token) history.push("/");
+    }, [user]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         try {
-            // console.table(email, password);
+            // enter with email and password
             const result = await auth.signInWithEmailAndPassword(email, password);
-            // console.log(result)
+            // get user and token
             const { user } = result;
             const idTokenResult = await user.getIdTokenResult();
-            dispatch({
-                type: "LOGGED_IN_USER",
-                payload: {
-                    email: user.email,
-                    token: idTokenResult.token,
-                },
-            });
 
-            history.push("/");
+            createOrUpdateUser(idTokenResult.token)
+            .then(
+                response => console.log('Create or update respons', response)
+            )
+            .catch()
+
+            // send email and token to reducer
+            // dispatch({
+            //     type: "LOGGED_IN_USER",
+            //     payload: {
+            //         email: user.email,
+            //         token: idTokenResult.token,
+            //     },
+            // });
+
+            // history.push("/");
         } catch (error) {
             console.log(error);
             toast.error(error.message);
@@ -113,8 +134,8 @@ const Login = () => {
                     {loading ? (
                         <h4 className="text-danger">Loading ...</h4>
                     ) : (
-                        <h4>Login</h4>
-                    )}
+                            <h4>Login</h4>
+                        )}
                     {loginForm()}
                     <Button
                         onClick={googleLogin}
@@ -126,8 +147,10 @@ const Login = () => {
                         size="large"
                     >
                         Login with Google
-                    </Button>
-                    <Link to='/forgot/password' className="float-right text-danger">Forgot Password</Link>
+          </Button>
+                    <Link to="/forgot/password" className="float-right text-danger">
+                        Forgot Password
+          </Link>
                 </div>
             </div>
         </div>
