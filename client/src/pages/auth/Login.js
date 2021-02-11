@@ -10,6 +10,8 @@ import { Link } from "react-router-dom";
 import { createOrUpdateUser } from '../../functions/auth'
 
 
+
+
 const Login = () => {
     const [email, setEmail] = useState("andrey.s.h.68@yandex.ru");
     const [password, setPassword] = useState("311774");
@@ -23,6 +25,15 @@ const Login = () => {
     useEffect(() => {
         if (user && user.token) history.push("/");
     }, [user]);
+
+    // function to redirect on admin or user
+    const roleBasedRedirect = (response) => {
+        if (response.data.role === 'admin') {
+            history.push('/admin/dashboard')
+        } else {
+            history.push('/user/history')
+        }
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -48,11 +59,12 @@ const Login = () => {
                                 _id: response.data._id,
                             },
                         });
+                        roleBasedRedirect(response)
                     }
                 )
                 .catch()
             // redirect to main page
-            history.push("/");
+            // history.push("/");
         } catch (error) {
             console.log(error);
             toast.error(error.message);
@@ -118,11 +130,12 @@ const Login = () => {
                                     _id: response.data._id,
                                 },
                             });
+                            roleBasedRedirect(response)
                         }
                     )
                     .catch()
                 // redirect to main page
-                history.push("/");
+                // history.push("/");
             })
             .catch((err) => {
                 console.log(err);
@@ -137,8 +150,8 @@ const Login = () => {
                     {loading ? (
                         <h4 className="text-danger">Loading ...</h4>
                     ) : (
-                        <h4>Login</h4>
-                    )}
+                            <h4>Login</h4>
+                        )}
                     {loginForm()}
                     <Button
                         onClick={googleLogin}
