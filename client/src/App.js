@@ -15,6 +15,7 @@ import UserRoute from "./components/routes/UserRoute";
 import AdminRouter from "./components/routes/AdminRoute";
 import AdminDashboard from './pages/admin/AdminDashboard'
 import CategoryCreate from './pages/admin/category/CategoryCreate'
+import CategoryUpdate from './pages/admin/category/CategoryUpdate'
 
 import { auth } from "./firebase";
 import { useDispatch } from "react-redux";
@@ -66,6 +67,7 @@ const App = () => {
         <UserRoute exact path="/user/wishlist" component={Wishlist} />
         <AdminRouter exact path="/admin/dashboard" component={AdminDashboard} />
         <AdminRouter exact path="/admin/category" component={CategoryCreate} />
+        <AdminRouter exact path="/admin/category/:slug" component={CategoryUpdate} />
       </Switch>
     </>
   );
