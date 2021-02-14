@@ -17,6 +17,9 @@ import AdminDashboard from './pages/admin/AdminDashboard'
 import CategoryCreate from './pages/admin/category/CategoryCreate'
 import CategoryUpdate from './pages/admin/category/CategoryUpdate'
 import SubCreate from './pages/admin/sub/SubCreateCategory'
+import SubUpdate from './pages/admin/sub/SubUpdate'
+import ProductCreate from './pages/admin/product/ProductCreate'
+
 
 import { auth } from "./firebase";
 import { useDispatch } from "react-redux";
@@ -70,6 +73,8 @@ const App = () => {
         <AdminRouter exact path="/admin/category" component={CategoryCreate} />
         <AdminRouter exact path="/admin/category/:slug" component={CategoryUpdate} />
         <AdminRouter exact path="/admin/sub" component={SubCreate} />
+        <AdminRouter exact path="/admin/sub/:slug" component={SubUpdate} />
+        <AdminRouter exact path="/admin/product" component={ProductCreate} />
       </Switch>
     </>
   );

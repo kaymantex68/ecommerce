@@ -30,10 +30,10 @@ exports.read = async (req, res) => {
 
 exports.update = async (req, res) => {
     try {
-        const { name } = req.body;
+        const { name, parent } = req.body;
         let updated = await Sub.findOneAndUpdate(
             { slug: req.params.slug },
-            { name, slug: slugify(name) },
+            { name, parent ,slug: slugify(name) },
             { new: true }
         )
         res.json(updated)

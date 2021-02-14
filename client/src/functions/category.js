@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 
-export const getCategories = async (authtoken) => {
+export const getCategories = async () => {
     return await axios.get(
         `${process.env.REACT_APP_API}/categories`
     );
@@ -43,5 +43,12 @@ export const createCategory = async (category, authtoken) => {
                 authtoken,
             }
         }
+    );
+};
+
+
+export const getCategorySubs = async (_id) => {
+    return await axios.get(
+        `${process.env.REACT_APP_API}/category/subs/${_id}`
     );
 };
