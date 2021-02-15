@@ -17,15 +17,16 @@ exports.create = async (req, res) => {
     }
 }
 
-exports.read = async (req, res) => {
+exports.listAll = async (req, res) => {
     try {
-        let product = await Product.find({})
-        res.json(product)
+        let products = await Product.find({})
+            .limit(parseInt(req.params.counts))
+            .populate('category')
+            .populate('subs')
+            .sort([['createdAt', 'desc']])
+            .exec()
+        res.json(products)
     } catch (err) {
-        console.log('err read ---->', err)
-        // res.status(400).send('Error create product')
-        res.status(400).json({
-            err: err.message
-        })
+
     }
 }
