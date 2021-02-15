@@ -2,7 +2,8 @@ import React from "react";
 import Resizer from "react-image-file-resizer";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { Avatar } from 'antd'
+import { Avatar, Badge } from 'antd'
+
 const FileUpload = ({ values, setValues, setLoading }) => {
     const { user } = useSelector((state) => ({ ...state }));
     const fileUploadAndResize = (e) => {
@@ -48,18 +49,49 @@ const FileUpload = ({ values, setValues, setLoading }) => {
         // set url to images[] in the parent component - ProductCreate
     };
 
+    const handleImageRemove = (public_id) => {
+        setLoading(true)
+        axios.post(`${process.env.REACT_APP_API}/removeimages`,{public_id},{
+            headers: {
+                authtoken: user? user.token : ''
+            }
+        })
+        .then((res)=>{
+            
+            const {images}= values
+            let filtredImages=images.filter(image=> {
+                return image.public_id!=public_id
+            })
+            setValues({...values, images: filtredImages})
+            setLoading(false)
+        })
+        .catch((err) => {
+            console.log(err)
+            setLoading(false)
+        })
+    }
+
     return (
         <>
             <div className="row">
                 {values.images && values.images.map(image => (
-                    <Avatar
+                    <Badge
                         key={image.public_id}
-                        src={image.url}
-                        size={80}
-                        className="m-3"
-                    />
+                        count="X"
+                        onClick={() => handleImageRemove(image.public_id)}
+                        style={{cursor: "pointer"}}
+                    >
+                        <Avatar
+                            key={image.public_id}
+                            shape="square"
+                            src={image.url}
+                            size={100}
+                            className="ml-3"
+                        />
+                    </Badge>
                 ))}
             </div>
+            <br/>
             <div className="row">
                 <label className="btn btn-primary btn-raised">
                     Choose File
