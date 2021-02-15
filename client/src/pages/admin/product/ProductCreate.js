@@ -30,8 +30,9 @@ const initialState = {
 
 const ProductCreate = () => {
     const [values, setValues] = useState(initialState);
-    const [subOptions, setSubOptions]=useState([])
-    const [showSub, setShowSub]=useState(false)
+    const [subOptions, setSubOptions] = useState([])
+    const [showSub, setShowSub] = useState(false)
+    const [loading, setLoading] = useState(false)
     const { user } = useSelector(state => ({ ...state }))
     useEffect(() => {
         loadCategories()
@@ -39,9 +40,9 @@ const ProductCreate = () => {
 
     const loadCategories = () => {
         getCategories().then((c) => {
-            setValues({...values, categories: c.data})
+            setValues({ ...values, categories: c.data })
         });
-        
+
     };
     // destruction
     const {
@@ -60,7 +61,7 @@ const ProductCreate = () => {
         brand,
     } = values;
 
-    
+
     const handleSubmit = (e) => {
         e.preventDefault()
         createProduct(values, user.token)
@@ -81,15 +82,15 @@ const ProductCreate = () => {
         console.log(values)
     }
 
-    const handleCategoryChange = (e)=>{
+    const handleCategoryChange = (e) => {
         e.preventDefault()
         console.log('CLICKED CATEGORY', e.target.value)
-        setValues({ ...values, subs:[], category: e.target.value })
-        getCategorySubs(e.target.value )
-        .then(res=>{
-            console.log('SUB CATEGORY OPTIONS WHEN CATEGORY CLICK', res.data)
-            setSubOptions(res.data)
-        })
+        setValues({ ...values, subs: [], category: e.target.value })
+        getCategorySubs(e.target.value)
+            .then(res => {
+                console.log('SUB CATEGORY OPTIONS WHEN CATEGORY CLICK', res.data)
+                setSubOptions(res.data)
+            })
         setShowSub(true)
     }
 
@@ -102,9 +103,13 @@ const ProductCreate = () => {
                 <div className="col-md-10">
                     <h4>Product create</h4>
                     <hr />
-
+                    {/* {JSON.stringify(values.images)} */}
                     <div className="p-3">
-                        <FileUpload />
+                        <FileUpload
+                            values={values}
+                            setValues={setValues}
+                            setLoading={setLoading}
+                        />
                     </div>
 
                     <ProductCreateForm
@@ -123,4 +128,3 @@ const ProductCreate = () => {
 };
 
 export default ProductCreate;
- 
