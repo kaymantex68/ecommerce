@@ -10,7 +10,7 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import CategoryForm from "../../../components/forms/CategoryForm";
 import LocalSearch from "../../../components/forms/LocalSearch";
 import ProductCreateForm from '../../../components/forms/ProductCreate'
-
+import FileUpload from '../../../components/forms/FileUpload'
 
 const initialState = {
     title: "",
@@ -31,6 +31,7 @@ const initialState = {
 const ProductCreate = () => {
     const [values, setValues] = useState(initialState);
     const [subOptions, setSubOptions]=useState([])
+    const [showSub, setShowSub]=useState(false)
     const { user } = useSelector(state => ({ ...state }))
     useEffect(() => {
         loadCategories()
@@ -83,12 +84,13 @@ const ProductCreate = () => {
     const handleCategoryChange = (e)=>{
         e.preventDefault()
         console.log('CLICKED CATEGORY', e.target.value)
-        setValues({ ...values, category: e.target.value })
+        setValues({ ...values, subs:[], category: e.target.value })
         getCategorySubs(e.target.value )
         .then(res=>{
             console.log('SUB CATEGORY OPTIONS WHEN CATEGORY CLICK', res.data)
             setSubOptions(res.data)
         })
+        setShowSub(true)
     }
 
     return (
@@ -100,12 +102,19 @@ const ProductCreate = () => {
                 <div className="col-md-10">
                     <h4>Product create</h4>
                     <hr />
-                    {/* {JSON.stringify(values)} */}
+
+                    <div className="p-3">
+                        <FileUpload />
+                    </div>
+
                     <ProductCreateForm
                         handleSubmit={handleSubmit}
                         handleChange={handleChange}
                         values={values}
                         handleCategoryChange={handleCategoryChange}
+                        subOptions={subOptions}
+                        showSub={showSub}
+                        setValues={setValues}
                     />
                 </div>
             </div>
@@ -114,3 +123,4 @@ const ProductCreate = () => {
 };
 
 export default ProductCreate;
+ 
