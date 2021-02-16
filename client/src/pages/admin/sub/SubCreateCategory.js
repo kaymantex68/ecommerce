@@ -94,8 +94,6 @@ const SubCreate = () => {
                         </select>
                     </div>
 
-                  
-
                     <CategoryForm
                         handleSubmit={handleSubmit}
                         name={name}

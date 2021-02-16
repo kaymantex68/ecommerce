@@ -2,10 +2,11 @@ import React from 'react'
 import { Card } from 'antd'
 import cat from '../../images/IMG_7923.JPG'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
-
+import { Link } from 'react-router-dom'
 const { Meta } = Card
-const AdminProductCard = ({ product }) => {
-    const { title, description, images } = product
+const AdminProductCard = ({ product, handleRemove }) => {
+    const { title, description, images, slug } = product
+    console.log(slug)
     return (
         <div>
             <Card cover={
@@ -15,7 +16,13 @@ const AdminProductCard = ({ product }) => {
                     className="p-1"
                 />
             }
-                actions={[<EditOutlined className="text-warning"/>,<DeleteOutlined className="text-danger"/>]}
+           
+                actions={[
+                    <Link to={`/admin/product/${slug}`}>
+                        <EditOutlined className="text-warning" />
+                    </Link>,
+                    <DeleteOutlined className="text-danger" onClick={() => handleRemove(slug)} />
+                ]}
             >
                 <Meta
                     title={title}

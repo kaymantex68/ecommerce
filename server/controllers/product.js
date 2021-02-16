@@ -30,3 +30,30 @@ exports.listAll = async (req, res) => {
 
     }
 }
+
+exports.remove = async (req, res) => {
+    try {
+        const deleted = await Product.findOneAndRemove({ slug: req.params.slug }).exec()
+        res.json(deleted)
+    } catch (err) {
+        console.log('delete error ----->', err)
+        return res.status(400).send('Product delete error')
+    }
+}
+
+exports.read = async (req, res) => {
+    const product = await Product.findOne({ slug: req.params.slug })
+        .populate('category')
+        .populate('subs')
+        .exec()
+    res.json(product)
+}
+
+exports.update = async (req, res) => {
+    try {
+
+    } catch (err) {
+        console.log('update error ----->', err)
+        return res.status(400).send('Product update error')
+    }
+}
