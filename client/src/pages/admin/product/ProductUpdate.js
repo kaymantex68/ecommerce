@@ -11,12 +11,13 @@ import CategoryForm from "../../../components/forms/CategoryForm";
 import LocalSearch from "../../../components/forms/LocalSearch";
 import FileUpload from '../../../components/forms/FileUpload'
 import { LoadingOutlined } from '@ant-design/icons'
+import ProductUpdateForm from '../../../components/forms/ProductUpdateForm'
+
 
 const initialState = {
     title: "",
     description: "",
     price: "",
-    categories: [],
     category: "",
     subs: [],
     shipping: "",
@@ -28,24 +29,58 @@ const initialState = {
     brand: "",
 };
 
-const ProductUpdate = ({match}) => {
+const ProductUpdate = ({ match }) => {
     // state
-    const [values, setValues]= useState(initialState)
+    const [values, setValues] = useState(initialState)
+    const [subOptions, setSubOptions] = useState([])
+    const [showSub, setShowSub]=useState(false)
+    const [categories, setCategories]=useState([])
     const { user } = useSelector(state => ({ ...state }))
     // router
-    const {slug} = match.params
+    const { slug } = match.params
 
-    useEffect(()=>{
+    useEffect(() => {
         loadProduct()
-    },[])
+        loadCategories()
+    }, [])
 
-    const loadProduct =() =>{
+    const loadProduct = () => {
         getProduct(slug)
-        .then( p =>{
-            // console.log('single product',p)
-            setValues({...values, ...p.data})
-        })
+            .then(p => {
+                // console.log('single product',p)
+                setValues(p.data )
+            })
     }
+
+    const loadCategories = () => {
+        getCategories().then((c) => {
+            setCategories({ ...values, categories: c.data })
+        })
+    };
+
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+
+    }
+
+    const handleChange = (e) => {
+        setValues({ ...values, [e.target.name]: e.target.value })
+    }
+
+
+    const handleCategoryChange = (e) => {
+        e.preventDefault()
+        console.log('CLICKED CATEGORY', e.target.value)
+        setValues({ ...values, subs: [], category: e.target.value })
+        getCategorySubs(e.target.value)
+            .then(res => {
+                console.log('SUB CATEGORY OPTIONS WHEN CATEGORY CLICK', res.data)
+                setSubOptions(res.data)
+            })
+        setShowSub(true)
+    }
+
 
     return (
         <div className="container-fluid">
@@ -55,6 +90,16 @@ const ProductUpdate = ({match}) => {
                 </div>
                 <div className="col-md-10">
                     <h4>Product Update</h4>
+                    {JSON.stringify(values)}
+                    <ProductUpdateForm
+                        handleSubmit={handleSubmit}
+                        handleChange={handleChange}
+                        values={values}
+                        setValues={setValues}
+                        handleCategoryChange={handleCategoryChange}
+                        categories={categories}
+                        subOptions={subOptions}
+                    />
                     <hr />
 
                 </div>
