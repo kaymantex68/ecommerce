@@ -16,7 +16,6 @@ const ProductUpdateForm = ({
         description,
         price,
         category,
-        subs,
         shipping,
         quantity,
         images,
@@ -25,6 +24,7 @@ const ProductUpdateForm = ({
         color,
         brand,
     } = values;
+
 
     return (
         <form onSubmit={handleSubmit}>
@@ -120,8 +120,9 @@ const ProductUpdateForm = ({
                     name="category"
                     className="form-control"
                     onChange={handleCategoryChange}
+
                 >
-                    <option>Please select</option>
+                    <option>{category ? category.name : 'please select'}</option>
                     {categories.length > 0 &&
                         categories.map((cat) => (
                             <option key={cat._id} value={cat._id}>

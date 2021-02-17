@@ -19,7 +19,6 @@ const initialState = {
     description: "",
     price: "",
     category: "",
-    subs: [],
     shipping: "",
     quantity: "",
     images: [],
@@ -33,7 +32,6 @@ const ProductUpdate = ({ match }) => {
     // state
     const [values, setValues] = useState(initialState)
     const [subOptions, setSubOptions] = useState([])
-    const [showSub, setShowSub]=useState(false)
     const [categories, setCategories]=useState([])
     const { user } = useSelector(state => ({ ...state }))
     // router
@@ -48,13 +46,13 @@ const ProductUpdate = ({ match }) => {
         getProduct(slug)
             .then(p => {
                 // console.log('single product',p)
-                setValues(p.data )
+                setValues({...values, ...p.data})
             })
     }
 
     const loadCategories = () => {
         getCategories().then((c) => {
-            setCategories({ ...values, categories: c.data })
+            setCategories(c.data )
         })
     };
 
@@ -78,7 +76,6 @@ const ProductUpdate = ({ match }) => {
                 console.log('SUB CATEGORY OPTIONS WHEN CATEGORY CLICK', res.data)
                 setSubOptions(res.data)
             })
-        setShowSub(true)
     }
 
 
