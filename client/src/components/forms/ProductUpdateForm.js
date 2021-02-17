@@ -10,6 +10,9 @@ const ProductUpdateForm = ({
     handleCategoryChange,
     categories,
     subOptions,
+    arrayOfSubIds,
+    setArrayOfSubIds,
+    selectedCategory
 }) => {
     const {
         title,
@@ -120,9 +123,9 @@ const ProductUpdateForm = ({
                     name="category"
                     className="form-control"
                     onChange={handleCategoryChange}
-
+                    value={selectedCategory? selectedCategory : category._id }
                 >
-                    <option>{category ? category.name : 'please select'}</option>
+                    {/* <option>{category ? category.name : 'please select'}</option> */}
                     {categories.length > 0 &&
                         categories.map((cat) => (
                             <option key={cat._id} value={cat._id}>
@@ -130,6 +133,23 @@ const ProductUpdateForm = ({
                             </option>
                         ))}
                 </select>
+            </div>
+
+            <div>
+                <label>Sub Categories</label>
+                <Select
+                    mode="multiple"
+                    style={{ width: "100%" }}
+                    placeholder="select sub"
+                    value={arrayOfSubIds}
+                    onChange={value => setArrayOfSubIds(value)}
+                >
+                    {console.log('values', values)}
+                    {console.log('subOptions.length', subOptions.length)}
+                    {subOptions && subOptions.map(sub => (
+                        <Option key={sub._id} value={sub._id}>{sub.name}</Option>
+                    ))}
+                </Select>
             </div>
 
             <br />

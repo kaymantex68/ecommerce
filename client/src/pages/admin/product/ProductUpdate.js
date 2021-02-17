@@ -9,10 +9,9 @@ import { getCategories, getCategorySubs } from "../../../functions/category";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import CategoryForm from "../../../components/forms/CategoryForm";
 import LocalSearch from "../../../components/forms/LocalSearch";
-import FileUpload from '../../../components/forms/FileUpload'
-import { LoadingOutlined } from '@ant-design/icons'
-import ProductUpdateForm from '../../../components/forms/ProductUpdateForm'
-
+import FileUpload from "../../../components/forms/FileUpload";
+import { LoadingOutlined } from "@ant-design/icons";
+import ProductUpdateForm from "../../../components/forms/ProductUpdateForm";
 
 const initialState = {
     title: "",
@@ -30,54 +29,74 @@ const initialState = {
 
 const ProductUpdate = ({ match }) => {
     // state
-    const [values, setValues] = useState(initialState)
-    const [subOptions, setSubOptions] = useState([])
-    const [categories, setCategories]=useState([])
-    const { user } = useSelector(state => ({ ...state }))
+    const [values, setValues] = useState(initialState);
+    const [subOptions, setSubOptions] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [arrayOfSubIds, setArrayOfSubIds] = useState([]);
+    const [selectedCategory ,setSelectedCategory]=useState('')
+    const { user } = useSelector((state) => ({ ...state }));
     // router
-    const { slug } = match.params
+    const { slug } = match.params;
 
     useEffect(() => {
-        loadProduct()
-        loadCategories()
-    }, [])
+        loadProduct();
+        loadCategories();
+    }, []);
 
     const loadProduct = () => {
-        getProduct(slug)
-            .then(p => {
-                // console.log('single product',p)
-                setValues({...values, ...p.data})
-            })
-    }
+        getProduct(slug).then((p) => {
+            // console.log('single product',p)
+            // 1 load single product
+            setValues({ ...values, ...p.data });
+            // 2 load single product category subs
+            getCategorySubs(p.data.category._id).then((res) => {
+                setSubOptions(res.data); //on first load default subs
+            });
+            // 3 prepare array of sub ids
+            let arr = [];
+            p.data.subs.map((s) => {
+                arr.push(s._id);
+            });
+            setArrayOfSubIds((prev) => arr);
+        });
+    };
 
     const loadCategories = () => {
         getCategories().then((c) => {
-            setCategories(c.data )
-        })
+            setCategories(c.data);
+        });
     };
 
-
     const handleSubmit = (e) => {
-        e.preventDefault()
-
-    }
+        e.preventDefault();
+    };
 
     const handleChange = (e) => {
-        setValues({ ...values, [e.target.name]: e.target.value })
-    }
-
+        setValues({ ...values, [e.target.name]: e.target.value });
+    };
 
     const handleCategoryChange = (e) => {
-        e.preventDefault()
-        console.log('CLICKED CATEGORY', e.target.value)
-        setValues({ ...values, subs: [], category: e.target.value })
-        getCategorySubs(e.target.value)
-            .then(res => {
-                console.log('SUB CATEGORY OPTIONS WHEN CATEGORY CLICK', res.data)
-                setSubOptions(res.data)
-            })
-    }
+        e.preventDefault();
+        console.log("CLICKED CATEGORY", e.target.value);
+        setValues({ ...values, subs: []});
 
+        setSelectedCategory(e.target.value)
+
+        getCategorySubs(e.target.value).then((res) => {
+            console.log("SUB CATEGORY OPTIONS WHEN CATEGORY CLICK", res.data);
+            setSubOptions(res.data);
+        });
+
+        console.log("EXISTIN CATEGORY values.category", values.category);
+
+        // if user click back to the original category
+        // show its subs categories in default
+        if(values.category._id === e.target.value) {
+            loadProduct()
+        }
+        // clear old sub category ids
+        setArrayOfSubIds([])
+    };
 
     return (
         <div className="container-fluid">
@@ -96,9 +115,11 @@ const ProductUpdate = ({ match }) => {
                         handleCategoryChange={handleCategoryChange}
                         categories={categories}
                         subOptions={subOptions}
+                        arrayOfSubIds={arrayOfSubIds}
+                        setArrayOfSubIds={setArrayOfSubIds}
+                        selectedCategory={selectedCategory}
                     />
                     <hr />
-
                 </div>
             </div>
         </div>
