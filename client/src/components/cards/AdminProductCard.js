@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 const { Meta } = Card
 const AdminProductCard = ({ product, handleRemove }) => {
     const { title, description, images, slug } = product
-    console.log(slug)
+    // console.log(slug)
     return (
         <div>
             <Card cover={
