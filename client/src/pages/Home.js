@@ -1,24 +1,9 @@
-import React, { useState, useEffect } from 'react'
-import { getProducts } from '../functions/product'
-import ProductCard from '../components/cards/ProductCard'
+import React from 'react'
 import Jumbotron from '../components/cards/Jumbotron'
+import NewArrivals from '../components/home/NewArrivals'
 
 const Home = () => {
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    loadAllProducts()
-  }, [])
-
-  const loadAllProducts = () => {
-    setLoading(true)
-    getProducts('createdAt','desc', 3)
-      .then(res => {
-        setProducts(res.data)
-        setLoading(false)
-      })
-  }
 
   return (
     <>
@@ -26,16 +11,10 @@ const Home = () => {
         {/* {loading ? <h4 className="text-danger">Loading...</h4> : <h4>All Product</h4>} */}
         <Jumbotron text={['New Arrivals...','New Products...']} />
       </div>
-
-      <div className="conteiner">
-        <div className="row p-5">
-          {products.map((product) => (
-            <div key={product._id} className="col-md-4">
-              <ProductCard product={product}/>
-            </div>
-          ))}
-        </div>
-      </div>
+    <h4 className="text-center p-3 mt-5 mb-5 display-4 jumbotron">
+      New Arrivals
+    </h4>
+     <NewArrivals />
     </>
   )
 }
