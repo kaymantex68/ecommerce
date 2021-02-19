@@ -61,3 +61,20 @@ exports.update = async (req, res) => {
         return res.status(400).send('Product update error')
     }
 }
+
+exports.list = async (req, res) => {
+    try {
+        const {sort, order, limit} = req.body
+        console.log(req.body)
+        const products = await Product.find({})
+            .populate('category')
+            .populate('subs')
+            .sort([[sort, order]])
+            .limit(limit)
+            .exec()
+        res.json(products)
+    } catch (err) {
+        console.log('err create ---->', err)
+        
+    }
+}

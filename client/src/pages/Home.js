@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { getProductsByCount } from '../functions/product'
+import { getProducts } from '../functions/product'
 import ProductCard from '../components/cards/ProductCard'
 import Jumbotron from '../components/cards/Jumbotron'
 
@@ -13,7 +13,7 @@ const Home = () => {
 
   const loadAllProducts = () => {
     setLoading(true)
-    getProductsByCount(4)
+    getProducts('createdAt','desc', 3)
       .then(res => {
         setProducts(res.data)
         setLoading(false)
