@@ -138,6 +138,4 @@ exports.productStar = async (req, res) => {
         console.log('ratingUpdated', ratingUpdate)
         res.json(ratingUpdate)
     }
-
-
 }
