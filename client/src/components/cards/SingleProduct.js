@@ -8,9 +8,11 @@ import ProductListItems from '../cards/ProductListItems'
 import cat from "../../images/IMG_7923.JPG";
 import StarRating from 'react-star-ratings'
 import RatingModal from '../modal/RatingModal'
+
 const { TabPane } = Tabs
 
-const SingleProduct = ({ product }) => {
+// this is a children component of Product
+const SingleProduct = ({ product, onStarClick, star }) => {
   const { title, images, description, _id } = product;
   return (
     <>
@@ -49,8 +51,9 @@ const SingleProduct = ({ product }) => {
               <StarRating
                 name={_id}
                 numberOfStars={5}
-                rating={2}
-                changeRating={(newRating, name) => console.table('newRating', newRating, 'name', name)}
+                rating={star}
+                changeRating={(newRating, name) => onStarClick(newRating, name)}
+                // changeRating={onStarClick}
                 isSelectable={true}
                 starRatedColor="red"
               />

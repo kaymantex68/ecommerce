@@ -23,16 +23,29 @@ const Login = () => {
     const { user } = useSelector((state) => ({ ...state }));
 
     useEffect(() => {
-        if (user && user.token) history.push("/");
-    }, [user]);
+        let intended = history.location.state
+        if (intended) {
+            return
+        } else {
+            if (user && user.token) history.push("/");
+        }
+    }, [user,history]);
 
     // function to redirect on admin or user
     const roleBasedRedirect = (response) => {
-        if (response.data.role === 'admin') {
-            history.push('/admin/dashboard')
+        let intended = history.location.state
+        console.log('history', history)
+        console.table('state', intended)
+        if (intended) {
+            history.push(intended.from)
         } else {
-            history.push('/user/history')
+            if (response.data.role === 'admin') {
+                history.push('/admin/dashboard')
+            } else {
+                history.push('/user/history')
+            }
         }
+
     }
 
     const handleSubmit = async (e) => {
@@ -150,8 +163,8 @@ const Login = () => {
                     {loading ? (
                         <h4 className="text-danger">Loading ...</h4>
                     ) : (
-                            <h4>Login</h4>
-                        )}
+                        <h4>Login</h4>
+                    )}
                     {loginForm()}
                     <Button
                         onClick={googleLogin}

@@ -1,6 +1,7 @@
 const Product = require('../models/product')
 const slugify = require('slugify')
 const User = require('../models/user')
+const { modelName } = require('../models/product')
 
 exports.create = async (req, res) => {
     try {
@@ -108,16 +109,16 @@ exports.productsCount = async (req, res) => {
 
 exports.productStar = async (req, res) => {
     const product = await Product.findById(req.params.productId).exec()
-    const user = await User.findOne({ email: req.params.email }).exec()
+    const user = await User.findOne({ email: req.user.email }).exec()
     const { star } = req.body
     // who is updating?
     // check if currently logged in user have already addad rating to this product?
-    let existingRatingObject = product.ratings.find((ele) => ele.postedBy.toString() === user._id)
+    let existingRatingObject = product.ratings.find((ele) => ele.postedBy.toString() === user._id.toString())
     // if user haven't left rating yet, push it 
     if (existingRatingObject === undefined) {
         let ratingAdded = await Product.findByIdAndUpdate(product._id,
             {
-                $push: { ratings: { start: star, postedBy: user._id } }
+                $push: { ratings: { star: star, postedBy: user._id} }
             },
             { new: true }
         ).exec()
