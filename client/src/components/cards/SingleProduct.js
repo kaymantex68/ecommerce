@@ -8,6 +8,7 @@ import ProductListItems from '../cards/ProductListItems'
 import cat from "../../images/IMG_7923.JPG";
 import StarRating from 'react-star-ratings'
 import RatingModal from '../modal/RatingModal'
+import { ShowAverage } from '../../functions/rating'
 
 const { TabPane } = Tabs
 
@@ -37,6 +38,12 @@ const SingleProduct = ({ product, onStarClick, star }) => {
       </div>
       <div className="col-md-5">
         <h1 className="bg-info p-3"> {title} </h1>
+
+        {/* something wrong ! check it!!! */}
+        {product && product.ratings && (product.ratings.length > 0 )
+        ? ShowAverage(product) 
+        : <div className="text-center pt-1 pb-3">No rating</div>}
+
         <Card
           actions={[
             <>
