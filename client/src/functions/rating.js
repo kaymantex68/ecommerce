@@ -9,16 +9,16 @@ export const ShowAverage = (p) => {
         let length = ratingsArray.length
 
         ratingsArray.map((r) => total.push(r.star))
-        console.log('length', length)
+        // console.log('length', length)
 
         let totalReducer = total.reduce((p, n) => p + n, 0)
-        console.log('totalReducer', totalReducer)
+        // console.log('totalReducer', totalReducer)
 
         let highest = length * 5
-        console.log('highest', highest)
+        // console.log('highest', highest)
 
         let result = (totalReducer * 5) / highest
-        console.log('result', result)
+        // console.log('result', result)
 
 
         return (

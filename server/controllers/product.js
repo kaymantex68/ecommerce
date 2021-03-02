@@ -118,7 +118,7 @@ exports.productStar = async (req, res) => {
     if (existingRatingObject === undefined) {
         let ratingAdded = await Product.findByIdAndUpdate(product._id,
             {
-                $push: { ratings: { star: star, postedBy: user._id} }
+                $push: { ratings: { star: star, postedBy: user._id } }
             },
             { new: true }
         ).exec()
@@ -141,37 +141,37 @@ exports.productStar = async (req, res) => {
     }
 }
 
-exports.listRelated = async (req,res)=> {
+exports.listRelated = async (req, res) => {
     const product = await Product.findById(req.params.productId).exec()
     const related = await Product.find({
-        _id: {$ne: product._id},
+        _id: { $ne: product._id },
         category: product.category,
     })
-    .limit(3)
-    .populate("category")
-    .populate("subs")
-    .populate("postedBy")
-    .exec()
+        .limit(3)
+        .populate("category")
+        .populate("subs")
+        .populate("postedBy")
+        .exec()
     res.json(related)
 }
 
 // search/filter
 
-const handleQuery= async (req, res, query) =>{
-    const products =await Product.find({$text: {$search: query}})
-    .populate('category', '_id name')
-    .puoelate('sub', '_id name')
-    .populate('postedBy', '_id name')
-    .exec()
+const handleQuery = async (req, res, query) => {
+    const products = await Product.find({ $text: { $search: query } })
+        .populate('category', '_id name')
+        .populate('subs', '_id name')
+        .populate('postedBy', '_id name')
+        .exec()
 
     res.json(products)
 }
 
-exports.searchFilter = async(req, res)=>{
-    const {query} = req.body
-    if(query) {
+exports.searchFilter = async (req, res) => {
+    const { query } = req.body
+    if (query) {
         console.log('query', query)
-        await handleQuery(req,res, query)
+        await handleQuery(req, res, query)
     }
 
 }

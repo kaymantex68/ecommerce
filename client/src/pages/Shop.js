@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { getProductsByCount } from '../functions/product'
+import { getProductsByCount, fetchProductByFilter } from '../functions/product'
 import { useSelector, useDispatch } from 'react-redux'
 import ProductCard from '../components/cards/ProductCard'
 
@@ -7,16 +7,37 @@ const Shop = () => {
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(false)
 
+    const { search } = useSelector(state => ({ ...state }))
+    const { text } = search
+
+
     useEffect(() => {
         loadAllProducts()
     }, [])
 
+    // 1.load products by default on product page
     const loadAllProducts = () => {
         getProductsByCount(12).then(res => {
             setProducts(res.data)
             setLoading(false)
         })
     }
+    // 2.load products on user search input
+    useEffect(() => {
+        const delayed = setTimeout(() => {
+            fetchProducts({ query: text })
+        }, 300)
+        return () => clearTimeout(delayed)
+
+    }, [text])
+
+    const fetchProducts = (arg) => {
+        fetchProductByFilter(arg)
+            .then(res => {
+                setProducts(res.data)
+            })
+    }
+
     return (
         <div className="container-fluid">
             <div className="row">
@@ -29,11 +50,11 @@ const Shop = () => {
                             ? <h4 className="text-danger">Loading...</h4>
                             : <h4 className="text-danger">Products</h4>
                     }
-                    {products.length<1 && <p>No products found</p>}
+                    {products.length < 1 && <p>No products found</p>}
                     <div className="row">
-                        {products.map((p)=>{
+                        {products.map((p) => {
                             return <div key={p._id} className="col-md-4">
-                                <ProductCard product={p}/>
+                                <ProductCard product={p} />
                             </div>
                         })}
                     </div>
