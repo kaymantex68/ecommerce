@@ -5,7 +5,17 @@ const router = express.Router()
 const { authCheck, adminCheck } = require('../middlewares/auth')
 
 // import controllers
-const { create, listAll, remove, read, update, list , productsCount, productStar, listRelated} = require("../controllers/product")
+const { 
+    create, 
+    listAll, 
+    remove, 
+    read, 
+    update, 
+    list , 
+    productsCount, 
+    productStar, 
+    listRelated,
+    searchFilter} = require("../controllers/product")
 
 // routes
 
@@ -22,6 +32,7 @@ router.post('/products', list)
 router.put('/product/star/:productId',authCheck, productStar)
 // related
 router.get('/product/related/:productId', listRelated)
+// search
+router.post('/search/filters', searchFilters)
 
-
-module.exports = router
+module.exports = router 
