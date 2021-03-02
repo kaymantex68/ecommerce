@@ -6,11 +6,14 @@ import {
     EyeOutlined,
     SettingOutlined,
     LogoutOutlined,
+    ShoppingCartOutlined
 } from "@ant-design/icons";
 import firebase from "firebase";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from 'react-router-dom'
+import Search from '../forms/Search'
+
 
 const { SubMenu, Item } = Menu; //Menu.SubMenu
 
@@ -37,6 +40,10 @@ const Header = () => {
             <Item key="home" icon={<EyeOutlined />}>
                 <Link to="/">Home </Link>
             </Item>
+
+            <Item key="shoop" icon={<ShoppingCartOutlined />} >
+                    <Link to="/shop">Shop</Link>
+                </Item>
 
             {!user &&
                 <Item key="register" icon={<UserAddOutlined />} className="float-right">
@@ -66,6 +73,10 @@ const Header = () => {
                         logout
                     </Item>
                 </SubMenu>}
+                <span className="float-right p-1">
+                <Search className="float-right"/>
+                </span>
+                
         </Menu>
     );
 };
