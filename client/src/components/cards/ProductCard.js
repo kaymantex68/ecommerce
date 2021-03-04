@@ -1,13 +1,37 @@
-import React from "react";
-import { Card } from "antd";
+import React, { useState } from "react";
+import { Card, Tooltip } from "antd";
 import { EyeOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { Link } from 'react-router-dom'
 import cat from "../../images/IMG_7923.JPG";
 import { ShowAverage } from '../../functions/rating'
-
+import _ from 'lodash'
+import { useDispatch, useSelector } from 'react-redux'
 
 const ProductCard = ({ product }) => {
     const { title, description, images, slug, price } = product
+    const [toolTip, setToolTip] = useState('click to add')
+
+    const handleAddToCart = () => {
+        // create cart array
+        let cart = []
+        if (typeof window !== undefined) {
+            // if cart in localStorage, get cart
+            if (localStorage.getItem('cart')) {
+                cart = JSON.parse(localStorage.getItem('cart'))
+            }
+            // push new product to cart
+            cart.push({
+                ...product,
+                count: 1
+            })
+            // remove duplicates
+            let unique = _.uniqWith(cart, _.isEqual)
+            // save to localStorage
+            localStorage.setItem('cart', JSON.stringify(unique))
+            setToolTip('added')
+        }
+    }
+
     return (
         <>
 
@@ -29,12 +53,13 @@ const ProductCard = ({ product }) => {
                     <Link to={`/product/${slug}`}>
                         <EyeOutlined className="text-warning" /> <br /> View product
                     </Link>,
-                    <>
-                        <ShoppingCartOutlined
-                            className="text-danger"
-                        // onClick={() => handleRemove(slug)}
-                        /> <br /> Add to cart
-                </>,
+                    <Tooltip title={toolTip}>
+                        <a onClick={handleAddToCart}>
+                            <ShoppingCartOutlined
+                                className="text-danger"
+                            /> <br /> Add to cart
+                        </a>
+                    </Tooltip>
                 ]}
             >
                 <Card.Meta
