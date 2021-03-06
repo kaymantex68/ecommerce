@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import ProductCardInCheckout from '../components/cards/ProductCardInCheckout'
 
-const Cart = () => {
+const Cart = ({history}) => {
     // from redux
     const { user, cart } = useSelector((state) => ({ ...state }))
     const dispatch = useDispatch()
@@ -14,6 +14,8 @@ const Cart = () => {
 
     const saveOrderToDb = () => {
         // to di later
+        alert('save order to DB')
+        history.push("/checkout")
     }
 
     const showCartItems = () => {
