@@ -10,9 +10,14 @@ import { useDispatch, useSelector } from 'react-redux'
 const ProductCard = ({ product }) => {
     const { title, description, images, slug, price } = product
     const [toolTip, setToolTip] = useState('click to add')
+    // redux
+    const {user, cart}=useSelector(state=>({...state}))
+    const dispatch= useDispatch()
+
 
     const handleAddToCart = () => {
         // create cart array
+        
         let cart = []
         if (typeof window !== undefined) {
             // if cart in localStorage, get cart
@@ -29,6 +34,11 @@ const ProductCard = ({ product }) => {
             // save to localStorage
             localStorage.setItem('cart', JSON.stringify(unique))
             setToolTip('added')
+            // add to redux
+            dispatch({
+                type: "ADD_TO_CART",
+                payload: unique,
+            })
         }
     }
 
