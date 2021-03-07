@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getUserCart } from "../functions/user";
+import { getUserCart, emptyUserCart } from "../functions/user";
+import { toast } from 'react-toastify'
 
 const Checkout = () => {
     const [products, setProducts] = useState([]);
@@ -23,6 +24,27 @@ const Checkout = () => {
                 setLoading(false);
             });
     }, []);
+
+    const removeAllFromCart = () => {
+        if (typeof window !== "undefined") {
+            // remove from localStorage
+            localStorage.removeItem('cart')
+            // remove from Redux
+            dispatch({
+                type: 'ADD_TO_CART',
+                payload: []
+            })
+            // remove from DB
+            emptyUserCart(user.token)
+                .then(res => {
+                    setProducts([])
+                    setTotal(0)
+                    toast.success('cart is empty')
+
+                })
+
+        }
+    }
 
     const saveAddressToDB = () => { };
 
@@ -47,19 +69,19 @@ const Checkout = () => {
             </div>
             <div className="col-md-6">
                 <h4>Order Summary</h4>
-                <hr/>
+                <hr />
                 <p>Products {products.length}</p>
                 <hr />
-                {products.map((p,i)=>{
+                {products.map((p, i) => {
                     return (
                         <div key={i}>
                             <p>{p.product.title} ({p.color}) x {p.count} = {" "}
-                            {p.product.price * p.count}
+                                {p.product.price * p.count}
                             </p>
                         </div>
                     )
                 })}
-               <hr/>
+                <hr />
                 <br />
                 <p>Cart total: ${total}</p>
                 <br />
@@ -68,7 +90,10 @@ const Checkout = () => {
                         <button className="btn btn-primary">Place order</button>
                     </div>
                     <div className="col-md-6">
-                        <button className="btn btn-primary">Empty cart</button>
+                        <button
+                            disabled={!products.length}
+                            onClick={() => removeAllFromCart()}
+                            className="btn btn-primary">Empty cart</button>
                     </div>
                 </div>
             </div>
