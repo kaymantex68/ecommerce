@@ -2,8 +2,8 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import ProductCardInCheckout from '../components/cards/ProductCardInCheckout'
-
-const Cart = ({history}) => {
+import { userCart } from '../functions/user'
+const Cart = ({ history }) => {
     // from redux
     const { user, cart } = useSelector((state) => ({ ...state }))
     const dispatch = useDispatch()
@@ -13,9 +13,19 @@ const Cart = ({history}) => {
     }
 
     const saveOrderToDb = () => {
-        // to di later
-        alert('save order to DB')
-        history.push("/checkout")
+        // console.log('cart', JSON.stringify(cart,null, 4))
+        // alert('save order to DB')
+        userCart(cart, user.token)
+            .then(res => {
+                console.log('cart post res', res)
+                if (res.data.ok) {
+                    history.push("/checkout")
+                }
+            })
+            .catch(err => {
+                console.log('cart post err', err)
+            })
+
     }
 
     const showCartItems = () => {
@@ -33,8 +43,8 @@ const Cart = ({history}) => {
                         <th scope="col">Remove</th>
                     </tr>
                 </thead>
-                {cart.map(p=>(
-                    <ProductCardInCheckout key={p._id} p={p}/>
+                {cart.map(p => (
+                    <ProductCardInCheckout key={p._id} p={p} />
                 ))}
             </table>
         )

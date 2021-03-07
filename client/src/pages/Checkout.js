@@ -1,10 +1,30 @@
-import React from 'react'
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserCart } from "../functions/user";
 
 const Checkout = () => {
+    const [products, setProducts] = useState([]);
+    const [total, setTotal] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const dispatch = useDispatch();
+    const { user } = useSelector((state) => ({ ...state }));
 
-    const saveAddressToDB = () => {
+    useEffect(() => {
+        setLoading(true);
+        getUserCart(user.token)
+            .then((res) => {
+                console.log(JSON.stringify(res.data, null, 4));
+                setProducts(res.data.products);
+                setTotal(res.data.cartTotal);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.log("error -----> ", err);
+                setLoading(false);
+            });
+    }, []);
 
-    }
+    const saveAddressToDB = () => { };
 
     return (
         <div className="row">
@@ -13,22 +33,36 @@ const Checkout = () => {
                 <br />
                 <br />
                 textarrea
-                <button className="btn btn-primary mt-2" onClick={saveAddressToDB}>Save</button>
-                <hr/>
+                <button
+                    button
+                    className="btn btn-primary mt-2"
+                    onClick={saveAddressToDB}
+                >
+                    Save
+                </button>
+                <hr />
                 <h4>Got a coupon?</h4>
-                <br/>
+                <br />
                 input and apply coupon
             </div>
             <div className="col-md-6">
                 <h4>Order Summary</h4>
-                <br/>
-                <p>Product x</p>
-                <br/>
-                <p>List of products</p>
-                <br/>
-                <p>Cart total: $x</p>
-                <br/>
-
+                <hr/>
+                <p>Products {products.length}</p>
+                <hr />
+                {products.map((p,i)=>{
+                    return (
+                        <div key={i}>
+                            <p>{p.product.title} ({p.color}) x {p.count} = {" "}
+                            {p.product.price * p.count}
+                            </p>
+                        </div>
+                    )
+                })}
+               <hr/>
+                <br />
+                <p>Cart total: ${total}</p>
+                <br />
                 <div className="row">
                     <div className="col-md-6">
                         <button className="btn btn-primary">Place order</button>
@@ -39,7 +73,7 @@ const Checkout = () => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Checkout
+export default Checkout;
