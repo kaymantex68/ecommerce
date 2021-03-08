@@ -28,6 +28,7 @@ import Shop from './pages/Shop'
 import Cart from './pages/Cart'
 import SideDrawer from './components/drawer/SideDrawer'
 import Checkout from './pages/Checkout'
+import CreateCouponPage from './pages/admin/coupon/CreateCouponPage'
 
 import { auth } from "./firebase";
 import { useDispatch } from "react-redux";
@@ -96,6 +97,7 @@ const App = () => {
         <Route exact path="/cart" component={Cart} />
 
         <UserRoute exact path="/checkout" component={Checkout} />
+        <AdminRouter exact path="/admin/coupon" component={CreateCouponPage} />
       </Switch>
     </>
   );
