@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import DataPicker from "react-datepicker";
 import {
     getCoupons,
-    removeCoupons,
+    removeCoupon,
     createCoupon,
 } from "../../../functions/coupon";
 import { DeleteOutlined } from "@ant-design/icons";
@@ -15,9 +15,24 @@ const CreateCouponPage = () => {
     const [name, setName] = useState("");
     const [expiry, setExpiry] = useState("");
     const [discount, setDiscount] = useState("");
+    const [coupons, setCoupons] = useState([])
     const [loading, setLoading] = useState(false);
 
     const { user } = useSelector((state) => ({ ...state }));
+
+    useEffect(() => {
+        setLoading(true)
+        getCoupons()
+            .then(res => {
+                setCoupons(res.data)
+                setLoading(false)
+            })
+            .catch(err => {
+                console.log('coupons', err)
+                setLoading(false)
+            })
+    }, [])
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -25,14 +40,44 @@ const CreateCouponPage = () => {
         console.table(name, expiry, discount);
         createCoupon({ name, expiry, discount }, user.token)
             .then((res) => {
-                setLoading(false);
                 setName("");
                 setDiscount("");
                 setExpiry("");
+                getCoupons()
+                    .then(res => {
+                        setCoupons(res.data)
+                        setLoading(false)
+                    })
+                    .catch(err => {
+                        console.log('coupons', err)
+                        setLoading(false)
+                    })
+                   
                 toast.success(`"${res.data.name}" is created`);
             })
             .catch((err) => console.log("created coupon err", err));
     };
+
+    const handleRemove = (id) => {
+        if (window.confirm('Delete?')) {
+            setLoading(true)
+            removeCoupon(id, user.token)
+                .then(res => {
+                    toast.error(`${res.data.name} was deleted!`)
+                    getCoupons()
+                        .then(res => {
+                            
+                            setCoupons(res.data)
+                            setLoading(false)
+                           
+                        })
+                        .catch(err => {
+                            console.log('coupons', err)
+                            setLoading(false)
+                        })
+                })
+        }
+    }
 
     return (
         <div className="container-fluid">
@@ -79,6 +124,30 @@ const CreateCouponPage = () => {
                         <br />
                         <button className="btn btn-outline-primary">Save</button>
                     </form>
+                    <br />
+                    {coupons.length ? <h4>Coupons count: {coupons.length}</h4> : null}
+                    <table className="table table-bordered">
+                        <thead className="thead-light">
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Expiry</th>
+                                <th scope="col">Discount</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {coupons.map(c => {
+                                return (
+                                    <tr key={c._id}>
+                                        <td>{c.name}</td>
+                                        <td>{new Date(c.expiry).toLocaleDateString()}</td>
+                                        <td>{c.discount}</td>
+                                        <td><DeleteOutlined onClick={() => handleRemove(c._id)} className="text-danger pointer" /></td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

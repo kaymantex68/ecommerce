@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getUserCart, emptyUserCart, saveUserAddress } from "../functions/user";
+import { getUserCart, emptyUserCart, saveUserAddress, applyCoupon } from "../functions/user";
 import { toast } from 'react-toastify'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -10,6 +10,9 @@ const Checkout = () => {
     const [total, setTotal] = useState(0);
     const [address, setAddress] = useState('')
     const [addressSaved, setAddressSaved] = useState(false)
+    const [coupon, setCoupon] = useState('')
+    const [totalAfterApplyCoupon, setTotalAfterApplyCoupon] = useState('')
+    const [discountError, setDiscountError] = useState("")
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const { user } = useSelector((state) => ({ ...state }));
@@ -61,12 +64,9 @@ const Checkout = () => {
             })
     };
 
-    return (
-        <div className="row">
-            <div className="col-md-6">
-                <h4>Delivery address</h4>
-                <br />
-                <br />
+    const showAddress = () => {
+        return (
+            <>
                 <ReactQuill theme="snow" value={address} onChange={setAddress} />
                 <button
                     button
@@ -75,10 +75,44 @@ const Checkout = () => {
                 >
                     Save
                 </button>
+            </>
+        )
+    }
+
+    const showApplyCoupon = () => {
+        return (
+            <>
+                <input onChange={(e) => setCoupon(e.target.value)} value={coupon} className="form-control" type="text" />
+                <button onClick={applyDiscountCoupon} className="btn btn-primary mt-2">Apply</button>
+            </>
+        )
+    }
+
+    const applyDiscountCoupon = () => {
+        console.log(coupon)
+        applyCoupon(coupon, user.token)
+            .then(res => {
+                console.log('RES ON COUPON APPLY', res.data)
+                if (res.data) {
+                    setTotalAfterApplyCoupon(res.data)
+                }
+                if(res.data.err) {
+                    setDiscountError(res.data.err)
+                }
+            })
+    }
+
+    return (
+        <div className="row p-3">
+            <div className="col-md-6">
+                <h4>Delivery address</h4>
+                <br />
+                <br />
+                {showAddress()}
                 <hr />
                 <h4>Got a coupon?</h4>
                 <br />
-                input and apply coupon
+                {showApplyCoupon()}
             </div>
             <div className="col-md-6">
                 <h4>Order Summary</h4>
