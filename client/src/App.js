@@ -63,7 +63,7 @@ const App = () => {
           .catch((err) => console.log(err));
       }
     });
-    // cleanup
+    // cleanupd
     return () => unsubscribe;
   }, [dispatch]);
 
